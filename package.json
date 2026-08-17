@@ -1,0 +1,10 @@
+{
+  "name": "app-scoping-board",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Shared MVP scope board and option matrix for the First Day mobile app decision",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
+}

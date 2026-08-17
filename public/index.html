@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App scope &amp; options — First Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFF3F2; --surface:#FFFFFF; --ink:#0E2A33; --teal:#1C6B7D;
+    --mint:#2FA37F; --clay:#BB5334; --muted:#647F88; --hair:#D3DEDD;
+    --shade:#EAF0F0; --amber:#8A6D2F; --amberbg:#FBF4E4; --amberline:#E5D5AE;
+    --hi:#DCEFE7; --lo:#F7E2DA;
+    --display:'Fraunces',Georgia,serif;
+    --body:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
+    font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--teal);margin:0 0 10px}
+  h1{font-family:var(--display);font-weight:600;font-size:clamp(29px,5vw,42px);
+    line-height:1.08;margin:0 0 14px;letter-spacing:-.015em}
+  .sub{max-width:68ch;color:var(--muted);margin:0}
+  h2{font-family:var(--display);font-size:21px;font-weight:600;margin:0 0 5px;
+    letter-spacing:-.01em}
+  .h2note{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:70ch}
+  nav{display:flex;gap:4px;margin:28px 0 0;border-bottom:1px solid var(--hair);
+    flex-wrap:wrap}
+  .tab{font-size:14px;font-weight:500;border:0;background:none;color:var(--muted);
+    padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+    font-family:var(--body)}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+  .tab:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:3px}
+  .panel[hidden]{display:none}
+  .panel{padding-top:22px}
+
+  /* ---------- toolbar ---------- */
+  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--hair);border-radius:10px;
+    padding:12px 16px;margin-bottom:16px}
+  .btn{font-family:var(--body);font-size:13px;font-weight:500;border:1px solid var(--hair);
+    background:var(--surface);color:var(--ink);border-radius:7px;padding:7px 13px;
+    cursor:pointer;transition:.15s ease}
+  .btn:hover{border-color:var(--teal);color:var(--teal)}
+  .btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.primary:hover{background:var(--teal);border-color:var(--teal);color:#fff}
+  .status{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-left:auto;
+    display:flex;align-items:center;gap:7px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);flex:none}
+  .dot.warn{background:var(--amber)}
+  .dot.off{background:var(--hair)}
+  .who{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+  .who input{font-family:var(--body);font-size:12.5px;color:var(--ink);width:110px;
+    border:1px solid var(--hair);border-radius:7px;padding:6px 9px;background:var(--bg)}
+  .who input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+
+  /* ---------- conflict banner ---------- */
+  .banner{background:var(--amberbg);border:1px solid var(--amberline);border-radius:10px;
+    padding:12px 16px;margin:-6px 0 16px;display:flex;align-items:center;gap:12px;
+    flex-wrap:wrap;font-size:13px;color:var(--amber)}
+  .banner[hidden]{display:none}
+  .banner p{margin:0;flex:1;min-width:260px}
+  .banner .btn{border-color:var(--amberline);background:var(--surface)}
+  .banner .btn:hover{border-color:var(--amber);color:var(--amber)}
+
+  /* ---------- board ---------- */
+  .board{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .col{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:18px;min-height:260px;transition:background .15s ease,border-color .15s ease}
+  .col.future{background:#F5F8F7}
+  .col.over{border-color:var(--mint);background:var(--hi)}
+  .colhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .colhead h2{margin:0;font-size:20px}
+  .cnt{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .colnote{margin:0 0 14px;font-size:13px;color:var(--muted)}
+  .warnline{background:var(--amberbg);border:1px solid var(--amberline);border-radius:8px;
+    padding:9px 12px;font-size:12.5px;color:var(--amber);margin:0 0 14px;display:none}
+  .warnline.on{display:block}
+  .catgroup{margin-bottom:14px}
+  .catgroup:last-child{margin-bottom:0}
+  .catgroup h3{font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--teal);margin:0 0 7px;font-weight:600}
+  .feat{display:flex;gap:9px;align-items:flex-start;background:var(--bg);
+    border:1px solid var(--hair);border-radius:8px;padding:9px 11px;margin-bottom:6px;
+    cursor:grab;transition:.12s ease}
+  .col.future .feat{background:var(--surface)}
+  .feat:hover{border-color:var(--teal)}
+  .feat.dragging{opacity:.4}
+  .grip{font-family:var(--mono);color:var(--hair);font-size:13px;line-height:1.4;
+    flex:none;user-select:none;margin-top:1px}
+  .feat:hover .grip{color:var(--teal)}
+  .flabel{font-size:13.5px;line-height:1.42;flex:1}
+  .tag{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;
+    padding:2px 6px;border-radius:3px;flex:none;margin-top:2px;white-space:nowrap}
+  .tag.std{background:var(--shade);color:var(--muted)}
+  .tag.custom{background:var(--hi);color:var(--mint)}
+  .tag.gate{background:var(--amberbg);color:var(--amber)}
+  .move{border:0;background:none;color:var(--muted);cursor:pointer;font-size:14px;
+    padding:0 2px;line-height:1.3;flex:none;border-radius:4px}
+  .move:hover{color:var(--teal)}
+  .move:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+  .empty{font-size:13px;color:var(--muted);font-style:italic;padding:8px 0}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;
+    color:var(--muted)}
+  .legend span{display:flex;align-items:center;gap:6px}
+
+  /* ---------- gate ---------- */
+  .gate{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:22px;margin-top:16px}
+  .gate h2{font-size:19px;margin-bottom:4px}
+  .gate .h2note{margin-bottom:16px}
+  .gatetable{border-collapse:collapse;width:100%}
+  .gatetable thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);padding:0 12px 9px;
+    border-bottom:1px solid var(--hair);font-weight:600;vertical-align:bottom}
+  .gatetable thead th:first-child{padding-left:0;width:42%}
+  .gatetable tbody th{font-weight:500;font-size:14.5px;padding:14px 12px 14px 0;
+    border-bottom:1px solid var(--hair);vertical-align:top;width:42%}
+  .gatetable tbody td{padding:14px 12px;border-bottom:1px solid var(--hair);
+    vertical-align:top;font-size:13.5px;font-weight:500}
+  .gatetable tbody tr:last-child th,.gatetable tbody tr:last-child td{border-bottom:0}
+  .gatetable small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);
+    margin-top:4px;line-height:1.4}
+  .gatetable td.ok{color:var(--mint)} .gatetable td.mid{color:var(--teal)}
+  .gatetable td.unkc{color:var(--amber)}
+  .gatefoot{margin:16px 0 0;font-size:13.5px;border-top:1px solid var(--hair);padding-top:14px}
+
+  /* ---------- matrix ---------- */
+  .control{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--hair);border-radius:10px;
+    padding:13px 18px;margin-bottom:18px}
+  .switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:500;
+    white-space:nowrap}
+  .switch input{position:absolute;opacity:0;width:1px;height:1px}
+  .track{width:38px;height:21px;border-radius:11px;background:var(--hair);
+    position:relative;transition:background .18s ease;flex:none}
+  .track::after{content:"";position:absolute;top:3px;left:3px;width:15px;height:15px;
+    border-radius:50%;background:var(--surface);transition:transform .18s ease;
+    box-shadow:0 1px 3px rgba(14,42,51,.28)}
+  .switch input:checked + .track{background:var(--mint)}
+  .switch input:checked + .track::after{transform:translateX(17px)}
+  .switch input:focus-visible + .track{outline:2px solid var(--teal);outline-offset:2px}
+  .control p{margin:0;color:var(--muted);font-size:13.5px}
+  .scroller{overflow-x:auto;background:var(--surface);border:1px solid var(--hair);
+    border-radius:12px}
+  table#matrix{border-collapse:collapse;width:100%;min-width:840px}
+  #matrix th,#matrix td{text-align:left;padding:0}
+  #matrix thead th{vertical-align:bottom;padding:18px 12px 14px;border-bottom:1px solid var(--hair)}
+  #matrix thead th:first-child{width:196px}
+  .fam{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--muted);display:block;margin-bottom:5px}
+  .tc .fam{color:var(--teal)}
+  .opt-name{font-family:var(--display);font-size:16px;font-weight:600;line-height:1.2;
+    display:block;letter-spacing:-.01em}
+  .opt-cost{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:block;
+    margin-top:5px}
+  #matrix tbody th{font-weight:500;padding:13px 12px;border-bottom:1px solid var(--hair);
+    font-size:14px;width:196px}
+  #matrix tbody td{padding:13px 12px;border-bottom:1px solid var(--hair);text-align:center}
+  #matrix tbody tr:last-child th,#matrix tbody tr:last-child td{border-bottom:0}
+  .weighted th{background:var(--shade)}
+  .wtag{font-family:var(--mono);font-size:10px;color:var(--teal);margin-left:6px;
+    opacity:0;transition:opacity .2s ease}
+  body.weighting .wtag{opacity:1}
+  .pips{display:inline-flex;gap:4px;align-items:center}
+  .pip{width:8px;height:8px;border-radius:50%;background:var(--hair)}
+  .pip.on{background:var(--teal)}
+  .s5 .pip.on{background:var(--mint)}
+  .s1 .pip.on,.s2 .pip.on{background:var(--clay)}
+  .score-n{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:block;
+    margin-top:5px}
+  .unk{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--amber)}
+  .unk-l{font-family:var(--mono);font-size:10px;color:var(--amber);display:block;
+    margin-top:3px;letter-spacing:.06em;text-transform:uppercase}
+  #matrix tfoot td,#matrix tfoot th{padding:16px 12px;border-top:2px solid var(--ink)}
+  #matrix tfoot th{font-family:var(--display);font-size:15px;font-weight:600}
+  .total{font-family:var(--mono);font-size:21px;font-weight:600}
+  .rank{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .lead .total{color:var(--mint)} .partial .total{color:var(--amber)}
+
+  .note{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:18px 22px;margin-top:16px}
+  .note h3{font-family:var(--mono);font-size:11px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--teal);margin:0 0 8px;font-weight:600}
+  .note p{margin:0;font-size:14px}
+  .note.amberish{background:var(--amberbg);border-color:var(--amberline)}
+  .note.amberish h3{color:var(--amber)}
+  .note.dark{background:var(--ink);color:#DCE9EC;border-color:var(--ink)}
+  .note.dark h3{font-family:var(--display);font-size:19px;font-weight:600;color:#fff;
+    margin:0 0 9px;letter-spacing:0;text-transform:none}
+  .note.dark p{margin:0 0 9px;font-size:14.5px;max-width:80ch}
+  .note.dark p:last-child{margin:0}
+  .note.dark b{color:#fff;font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .chip{font-size:12.5px;background:var(--shade);border-radius:20px;padding:4px 12px}
+  .chip::before{content:"= ";font-family:var(--mono);color:var(--mint);font-weight:600}
+
+  .q{background:var(--amberbg);border:1px solid var(--amberline);border-radius:12px;
+    padding:20px 22px}
+  .q h2{color:var(--amber)}
+  .q ol{margin:0;padding-left:22px}
+  .q li{padding:7px 0;font-size:14.5px}
+  .q li b{font-weight:600}
+  .q li span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--hair);
+    font-size:12.5px;color:var(--muted)}
+  footer p{margin:0 0 7px}
+  code{font-family:var(--mono);font-size:11.5px;background:var(--shade);
+    padding:1px 5px;border-radius:3px}
+
+  @media (max-width:820px){.board{grid-template-columns:1fr}}
+  @media (max-width:600px){
+    .wrap{padding:28px 16px 60px}
+    #matrix tbody th,#matrix thead th:first-child{width:150px}
+    .status{margin-left:0;width:100%}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Decision · August 2026</p>
+  <h1>App scope and options</h1>
+  <p class="sub">Drag features between MVP and future phases. Three platform requirements sit above the option matrix because they could rule an option out before scoring begins.</p>
+</header>
+
+<nav role="tablist" aria-label="Sections">
+  <button class="tab" role="tab" id="tab-scope" aria-controls="p-scope" aria-selected="true">Scope board</button>
+  <button class="tab" role="tab" id="tab-matrix" aria-controls="p-matrix" aria-selected="false">Options matrix</button>
+  <button class="tab" role="tab" id="tab-open" aria-controls="p-open" aria-selected="false">Still unanswered</button>
+</nav>
+
+<!-- ================= SCOPE BOARD ================= -->
+<section class="panel" id="p-scope" role="tabpanel" aria-labelledby="tab-scope">
+  <div class="toolbar">
+    <button class="btn primary" id="save">Save</button>
+    <button class="btn" id="download">Download JSON</button>
+    <button class="btn" id="copy">Copy JSON</button>
+    <button class="btn" id="reset">Reset to default</button>
+    <span class="who"><label for="who">Editing as</label><input id="who" type="text"
+      placeholder="your name" autocomplete="off" maxlength="60"></span>
+    <span class="status" id="status"><span class="dot" id="dot"></span><span id="statustext">&nbsp;</span></span>
+  </div>
+
+  <div class="banner" id="banner" hidden>
+    <p id="bannertext"></p>
+    <button class="btn" id="taketheirs">Load their version</button>
+    <button class="btn" id="keepmine">Overwrite with mine</button>
+    <button class="btn" id="dismiss">Dismiss</button>
+  </div>
+
+  <div class="board">
+    <div class="col mvp" id="col-mvp" data-bucket="mvp">
+      <div class="colhead"><h2>MVP</h2><span class="cnt" id="cnt-mvp"></span></div>
+      <p class="colnote">iOS and Android, with shopping. Judged on one thing: does it move subscriber churn.</p>
+      <div class="warnline" id="warn-mvp"></div>
+      <div class="items" id="items-mvp"></div>
+    </div>
+    <div class="col future" id="col-future" data-bucket="future">
+      <div class="colhead"><h2>Future phases</h2><span class="cnt" id="cnt-future"></span></div>
+      <p class="colnote">Everything worth doing that doesn't need to exist to answer the churn question.</p>
+      <div class="warnline" id="warn-future"></div>
+      <div class="items" id="items-future"></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="tag std">Standard</span> ships on a standard Tapcart build</span>
+    <span><span class="tag custom">Custom</span> needs custom blocks or bespoke</span>
+    <span><span class="tag gate">Gate</span> depends on an unverified platform capability</span>
+  </div>
+
+  <div class="note">
+    <h3>Two defaults worth arguing about</h3>
+    <p>New account sign-up sits in MVP because shopping is now in MVP &mdash; a store new customers can't create an account in is an odd artefact. Free gift in the cancel-save flow sits in future phases even though it feeds retention directly, which may be the wrong call. Both are one drag away.</p>
+  </div>
+</section>
+
+<!-- ================= MATRIX ================= -->
+<section class="panel" id="p-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
+  <div class="gate">
+    <h2>Three requirements that come before the score</h2>
+    <p class="h2note">From the CRM and lifecycle requirements. Each could rule out a platform option entirely, and none is verified for either vendor. A platform that fails the first two is not a cheaper version of bespoke &mdash; it's a different product.</p>
+    <table class="gatetable">
+      <thead><tr><th scope="col">Requirement</th><th scope="col">Bespoke</th><th scope="col">Tapcart</th><th scope="col">Appbrew</th></tr></thead>
+      <tbody>
+        <tr>
+          <th scope="row">Push sends natively from Klaviyo<small>Marketing and transactional both live in the existing lifecycle ecosystem, not a second push engine running in parallel</small></th>
+          <td class="ok">By construction<small>Embed Klaviyo's SDK directly</small></td>
+          <td class="unkc">Unverified<small>Does Tapcart push send <em>from</em> Klaviyo, or does Tapcart own the engine and merely integrate?</small></td>
+          <td class="unkc">Unverified</td>
+        </tr>
+        <tr>
+          <th scope="row">Named behavioural events into Klaviyo<small>Screen viewed, product viewed, educational content actually watched &mdash; usable for segmentation, triggering and personalisation, in real time</small></th>
+          <td class="ok">By construction<small>We define the schema</small></td>
+          <td class="unkc">Unverified<small>Get the exact event and property list, and confirm they land as metrics rather than generic app activity</small></td>
+          <td class="unkc">Unverified</td>
+        </tr>
+        <tr>
+          <th scope="row">In-app messaging deployable without an app release<small>Lifecycle owns modals, banners, embedded cards and interstitials, targeted on subscription status and behaviour</small></th>
+          <td class="mid">Only if built<small>Needs its own CMS and targeting layer &mdash; real scope</small></td>
+          <td class="unkc">Unverified<small>Ask whether this is native or needs custom blocks</small></td>
+          <td class="unkc">Unverified</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="gatefoot">The third row is a platform property, not a feature that can be added later. If it needs custom blocks on Tapcart, the customised path stops being optional.</p>
+  </div>
+
+  <div class="control" style="margin-top:16px">
+    <label class="switch">
+      <input type="checkbox" id="weight">
+      <span class="track" aria-hidden="true"></span>
+      <span>Count subscriptions double</span>
+    </label>
+    <p>Weights the two subscription rows &times;2, on the logic that they carry 91% of our Shopify revenue.</p>
+  </div>
+
+  <div class="scroller">
+    <table id="matrix">
+      <thead>
+        <tr>
+          <th scope="col"><span class="eyebrow" style="margin:0">Criterion</span></th>
+          <th scope="col"><span class="fam">Custom</span><span class="opt-name">Bespoke build</span><span class="opt-cost">Build + retainer</span></th>
+          <th scope="col" class="tc"><span class="fam">Tapcart Enterprise</span><span class="opt-name">Standard build</span><span class="opt-cost">Their team builds it</span></th>
+          <th scope="col" class="tc"><span class="fam">Tapcart Enterprise</span><span class="opt-name">Heavily customised</span><span class="opt-cost">+ custom blocks</span></th>
+          <th scope="col"><span class="fam">Platform</span><span class="opt-name">Appbrew</span><span class="opt-cost">Unquoted</span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot><tr><th scope="row">Total</th>
+        <td><span class="total"></span><span class="rank"></span></td>
+        <td><span class="total"></span><span class="rank"></span></td>
+        <td><span class="total"></span><span class="rank"></span></td>
+        <td><span class="total"></span><span class="rank"></span></td>
+      </tr></tfoot>
+    </table>
+  </div>
+
+  <div class="note">
+    <h3>The two Tapcart columns share a foundation</h3>
+    <p>Same plan, so these ten things don't differentiate them. Only build spend, time to launch, customisation ceiling and ongoing dev burden do.</p>
+    <div class="chips">
+      <span class="chip">Stay Ai integration</span><span class="chip">Pause, swap, skip, change frequency</span>
+      <span class="chip">RetentionEngine cancel deflection</span><span class="chip">Subscription checkout</span>
+      <span class="chip">Klaviyo and Attentive</span><span class="chip">Branch attribution</span>
+      <span class="chip">Native checkout</span><span class="chip">Premium integrations</span>
+      <span class="chip">Passwordless sign-in</span><span class="chip">Platform fee</span>
+    </div>
+  </div>
+
+  <div class="note amberish">
+    <h3>Why Appbrew has two blanks</h3>
+    <p>Their pricing isn't published and their Stay&nbsp;Ai depth is a vendor claim we haven't tested, so both are shown as unknown rather than guessed. Its total is scored out of five rows, not seven, and isn't directly comparable until those land.</p>
+  </div>
+
+  <div class="note dark">
+    <h3>The two Tapcart paths aren't alternatives. They're phases.</h3>
+    <p>Nothing in the current MVP needs a custom block &mdash; watch the counter on the board, which tells you the moment that stops being true.</p>
+    <p>Custom blocks buy the health and personalisation features parked in future phases: dosing tracker, consumption&#8209;paced reminders, a bespoke subscriber home.</p>
+    <p><b>Launch standard, measure against a held&#8209;out control cohort, and spend custom&#8209;block money only where the data shows the standard experience falling short.</b></p>
+  </div>
+</section>
+
+<!-- ================= OPEN ================= -->
+<section class="panel" id="p-open" role="tabpanel" aria-labelledby="tab-open" hidden>
+  <div class="q">
+    <h2>Nine things to get in writing</h2>
+    <p class="h2note">Everything in the matrix assumes Tapcart Enterprise. Most of these could change the arithmetic, and none were answered in Tapcart's last reply.</p>
+    <ol>
+      <li><b>Which plan includes the Stay Ai integration, and does a success fee apply at that plan?</b><span>Their reply described the integration repeatedly without naming a tier, and the pricing section came through empty. Get the tier and the fee structure confirmed in one email.</span></li>
+      <li><b>Does push send from Klaviyo, or from your push engine?</b><span>A parallel push engine fails the requirement even if it &ldquo;integrates with Klaviyo&rdquo;.</span></li>
+      <li><b>The exact list of events and properties that reach Klaviyo, and whether they're segmentable and triggerable.</b><span>Named events landing as metrics, in real time. Ask for the schema, not a logo.</span></li>
+      <li><b>Can lifecycle deploy in-app modals, banners and embedded cards without an app release, and is that native or a custom block?</b><span>If it needs custom blocks, the phasing argument changes.</span></li>
+      <li><b>Is the Stay Ai portal native UI or a webview inside the app?</b><span>&ldquo;Embedded natively&rdquo; leaves this open, and they offered to find screenshots rather than sending them.</span></li>
+      <li><b>Who maintains custom blocks through platform updates, and does Enterprise support cover them?</b><span>Decides whether custom blocks are an asset or a liability we own.</span></li>
+      <li><b>Does &ldquo;managed Apple &amp; Google developer portal&rdquo; mean they administer accounts we own, or hold them?</b><span>The lock-in question. We need the accounts, the listing and the push tokens.</span></li>
+      <li><b>Appbrew: fixed pricing in writing, and a live Stay Ai demo on our own catalogue.</b><span>Fills the two blanks in the matrix, and it's the only pricing leverage we have.</span></li>
+      <li><b>Two reference customers on Stay Ai at similar revenue, on the phone.</b><span>Kaged and Credo are Tapcart's chosen references. Ask specifically for a Stay Ai brand.</span></li>
+    </ol>
+  </div>
+
+  <div class="note" style="margin-top:16px">
+    <h3>One thing to settle internally</h3>
+    <p>Success metric is subscriber churn in Stay Ai cohort data, not app revenue in Branch. Branch attributes deep&#8209;linked conversions but not organic app opens, so it structurally undercounts app&#8209;driven revenue. Churn on a held&#8209;out cohort is the only clean read, and it needs defining before launch.</p>
+  </div>
+
+  <div class="note" style="margin-top:16px">
+    <h3>And one about ourselves</h3>
+    <p>Bespoke scores worst on time to launch and dev burden for a reason: G&nbsp;Fuel migrated <em>off</em> a custom app over a developer bottleneck, and Your Super refused a 6&ndash;8 month build. Whether that applies to us depends on whether we have in&#8209;house mobile capacity or would be signing an agency retainer.</p>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Business case behind this.</strong> 95,753 active subscriptions losing roughly 14% a month; 91% of Shopify revenue subscription&#8209;linked; 93% of sessions on mobile. A sustained one&#8209;point churn improvement is worth about $3.1M in annual run&#8209;rate revenue. Via Omni &mdash; topics <code>stay_ai</code>, <code>performance</code>, <code>ga4_sessions_wip</code>, July 2026.</p>
+  <p><strong>Pricing deliberately omitted.</strong> Earlier figures came from third&#8209;party sources that Tapcart's current pricing page contradicts. Platform cost is identical across both Tapcart columns, so it can't break the tie between them &mdash; but it does affect go/no&#8209;go, and it's still unquoted.</p>
+</footer>
+</div>
+
+<script>
+const FEATURES = [{"id": "plat","label": "iOS and Android at launch","cat": "Platform","bucket": "mvp","tag": "std"},{"id": "ident","label": "Single customer identity across Shopify, app and Klaviyo","cat": "Identity and data","bucket": "mvp","tag": "gate"},{"id": "kprof","label": "Known customers auto-associated with their existing Klaviyo profile","cat": "Identity and data","bucket": "mvp","tag": "gate"},{"id": "kev","label": "Named behavioural events into Klaviyo, syncing in real time","cat": "Identity and data","bucket": "mvp","tag": "gate"},{"id": "signin","label": "Existing account sign-in via Shopify multipass","cat": "Identity and data","bucket": "mvp","tag": "std"},{"id": "signup","label": "New account sign-up and onboarding, including social sign-in","cat": "Identity and data","bucket": "mvp","tag": "std"},{"id": "profile","label": "Profile and account management","cat": "Identity and data","bucket": "mvp","tag": "std"},{"id": "pause","label": "Pause a subscription for a chosen period","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "skip","label": "Skip the next order","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "delay","label": "Delay or change the next charge date","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "freq","label": "Change delivery frequency","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "swap","label": "Swap to an alternate SKU from a brand-defined list","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "addprod","label": "Add a product to the next order","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "cancel","label": "Cancel routed through RetentionEngine save offers","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "payaddr","label": "Update payment method and shipping address","cat": "Subscription","bucket": "mvp","tag": "std"},{"id": "browse","label": "Catalogue browse, search and filtering","cat": "Shopping","bucket": "mvp","tag": "std"},{"id": "pdp","label": "Product pages","cat": "Shopping","bucket": "mvp","tag": "std"},{"id": "plp","label": "Collection pages","cat": "Shopping","bucket": "mvp","tag": "std"},{"id": "selling","label": "Subscribe or buy once, showing the per-unit saving","cat": "Shopping","bucket": "mvp","tag": "std"},{"id": "checkout","label": "Native checkout with Shop Pay and Apple Pay","cat": "Shopping","bucket": "mvp","tag": "std"},{"id": "orders","label": "Order history and delivery tracking","cat": "Shopping","bucket": "mvp","tag": "std"},{"id": "push","label": "Basic push notifications sent from Klaviyo","cat": "Messaging","bucket": "mvp","tag": "gate"},{"id": "notifmgmt","label": "Notification management and marketing opt-out","cat": "Messaging","bucket": "mvp","tag": "std"},{"id": "optin","label": "SMS and email opt-in","cat": "Messaging","bucket": "mvp","tag": "std"},{"id": "deeplink","label": "Deep links into the relevant screen, not the home screen","cat": "Messaging","bucket": "mvp","tag": "std"},{"id": "care","label": "In-app care with subscription context attached","cat": "Care","bucket": "mvp","tag": "std"},{"id": "funnel","label": "Install to account creation to first session funnel","cat": "Measurement","bucket": "mvp","tag": "std"},{"id": "cohort","label": "Held-out control cohort defined in Stay Ai before launch","cat": "Measurement","bucket": "mvp","tag": "std"},{"id": "pushoptin","label": "Push opt-in rate","cat": "Measurement","bucket": "mvp","tag": "std"},{"id": "retcompare","label": "App vs non-app churn, order frequency, LTV and tenure","cat": "Measurement","bucket": "mvp","tag": "std"},{"id": "richpush","label": "Rich media push notifications","cat": "Messaging","bucket": "future","tag": "std"},{"id": "deferred","label": "Deferred deep linking \u2014 one link installs and still lands on target","cat": "Messaging","bucket": "future","tag": "std"},{"id": "iam","label": "In-app messaging surface: modals, banners, slide-ins, embedded cards","cat": "Lifecycle","bucket": "future","tag": "gate"},{"id": "iamtarget","label": "Audience targeting on profile, subscription status and purchase history","cat": "Lifecycle","bucket": "future","tag": "gate"},{"id": "iamtrig","label": "Behavioural triggers: subscription page viewed, shipment skipped","cat": "Lifecycle","bucket": "future","tag": "gate"},{"id": "upsell","label": "Targeted upsell and cross-sell based on what someone already takes","cat": "Lifecycle","bucket": "future","tag": "custom"},{"id": "dynperso","label": "Dynamic personalisation of creative, copy, offer and product","cat": "Lifecycle","bucket": "future","tag": "custom"},{"id": "profperso","label": "Profile personalisation","cat": "Lifecycle","bucket": "future","tag": "custom"},{"id": "rewards","label": "Rewards management, deployment and loyalty points","cat": "Rewards","bucket": "future","tag": "std"},{"id": "gift","label": "Free gift and reward offers inside the cancel-save flow","cat": "Rewards","bucket": "future","tag": "std"},{"id": "referral","label": "Referrals","cat": "Rewards","bucket": "future","tag": "std"},{"id": "routine","label": "Routine management, reminders and health tracking","cat": "Health","bucket": "future","tag": "custom"},{"id": "dosing","label": "Dosing or streak tracker with a daily nudge","cat": "Health","bucket": "future","tag": "custom"},{"id": "paced","label": "Reorder reminders paced to actual consumption","cat": "Health","bucket": "future","tag": "custom"},{"id": "subviz","label": "Subscription progression visualisation","cat": "Health","bucket": "future","tag": "custom"},{"id": "subhome","label": "Subscriber home screen built around the next delivery","cat": "Lifecycle","bucket": "future","tag": "custom"},{"id": "bundle","label": "Bundle builder with our own pricing and eligibility logic","cat": "Shopping","bucket": "future","tag": "custom"},{"id": "checklist","label": "Onboarding checklist","cat": "Identity and data","bucket": "future","tag": "std"},{"id": "reviews","label": "Product reviews and customer photos","cat": "Shopping","bucket": "future","tag": "std"},{"id": "quiz","label": "Product recommendation quiz","cat": "Shopping","bucket": "future","tag": "std"},{"id": "socials","label": "Links to socials","cat": "Shopping","bucket": "future","tag": "std"},{"id": "engage","label": "Engagement reporting: DAU/MAU, sessions, content consumed","cat": "Measurement","bucket": "future","tag": "std"},{"id": "wishlist","label": "Wishlists","cat": "Shopping","bucket": "future","tag": "std"},{"id": "live","label": "Live shopping","cat": "Shopping","bucket": "future","tag": "std"},{"id": "content","label": "In-app editorial content","cat": "Shopping","bucket": "future","tag": "std"},{"id": "multicur","label": "Multi-currency","cat": "Shopping","bucket": "future","tag": "std"}];
+const KEY = "firstday.appscope.v1";
+const CATS = ["Platform","Identity and data","Subscription","Shopping","Messaging","Care",
+              "Lifecycle","Rewards","Health","Measurement"];
+
+const API = "/api/scope";
+const NAMEKEY = "firstday.appscope.name";
+const POLL_MS = 30000;
+
+/* Per-browser storage. It is no longer the source of truth — it mirrors the
+   shared scope so the board still works offline, in a sandboxed preview, or
+   before the backend is configured. */
+const store = (() => {
+  let ok = false;
+  try { const t="__t"; localStorage.setItem(t,"1"); localStorage.removeItem(t); ok = true; }
+  catch(e) { ok = false; }
+  return {
+    available: ok,
+    read(){ if(!ok) return null; try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } },
+    write(v){ if(!ok) return false; try{ localStorage.setItem(KEY, JSON.stringify(v)); return true; }catch(e){ return false; } },
+    clear(){ if(!ok) return; try{ localStorage.removeItem(KEY); }catch(e){} },
+    name(){ if(!ok) return ""; try{ return localStorage.getItem(NAMEKEY) || ""; }catch(e){ return ""; } },
+    setName(v){ if(!ok) return; try{ localStorage.setItem(NAMEKEY, v); }catch(e){} }
+  };
+})();
+
+let state = {};
+FEATURES.forEach(f => state[f.id] = f.bucket);
+
+/* mode: "shared" once /api/scope answers, otherwise "local" or "preview" */
+let mode = "local";
+let version = null;
+let lastBy = null, lastAt = null;
+let dirty = false;
+let conflict = null;   /* the server row we lost a race to, when there is one */
+let editorName = store.name();
+
+/* Unknown ids are ignored so the board can gain features without a migration. */
+function applyBuckets(buckets){
+  if (!buckets) return;
+  Object.keys(buckets).forEach(k => { if (k in state) state[k] = buckets[k]; });
+}
+
+const els = {
+  mvp: document.getElementById("items-mvp"),
+  future: document.getElementById("items-future"),
+  cntMvp: document.getElementById("cnt-mvp"),
+  cntFut: document.getElementById("cnt-future"),
+  warnMvp: document.getElementById("warn-mvp"),
+  warnFut: document.getElementById("warn-future"),
+  dot: document.getElementById("dot"),
+  statusText: document.getElementById("statustext"),
+  banner: document.getElementById("banner"),
+  bannerText: document.getElementById("bannertext"),
+  who: document.getElementById("who")
+};
+
+function byId(id){ return FEATURES.find(f => f.id === id); }
+
+function card(f){
+  const other = state[f.id] === "mvp" ? "future phases" : "MVP";
+  const el = document.createElement("div");
+  el.className = "feat";
+  el.draggable = true;
+  el.dataset.id = f.id;
+  el.innerHTML =
+    '<span class="grip" aria-hidden="true">&#8942;&#8942;</span>' +
+    '<span class="flabel">' + f.label + '</span>' +
+    '<span class="tag ' + f.tag + '">' + (f.tag === "std" ? "Standard" : f.tag === "custom" ? "Custom" : "Gate") + '</span>' +
+    '<button class="move" title="Move to ' + other + '" aria-label="Move &quot;' + f.label.replace(/"/g,"") + '&quot; to ' + other + '">&#8646;</button>';
+  el.addEventListener("dragstart", e => {
+    e.dataTransfer.setData("text/plain", f.id);
+    e.dataTransfer.effectAllowed = "move";
+    el.classList.add("dragging");
+  });
+  el.addEventListener("dragend", () => el.classList.remove("dragging"));
+  el.querySelector(".move").addEventListener("click", e => {
+    e.stopPropagation();
+    move(f.id, state[f.id] === "mvp" ? "future" : "mvp");
+  });
+  return el;
+}
+
+function render(){
+  ["mvp","future"].forEach(bucket => {
+    const host = els[bucket === "mvp" ? "mvp" : "future"];
+    host.innerHTML = "";
+    const mine = FEATURES.filter(f => state[f.id] === bucket);
+    if (!mine.length) {
+      const p = document.createElement("p");
+      p.className = "empty";
+      p.textContent = "Nothing here yet — drag a feature across.";
+      host.appendChild(p);
+    }
+    CATS.forEach(cat => {
+      const inCat = mine.filter(f => f.cat === cat);
+      if (!inCat.length) return;
+      const g = document.createElement("div");
+      g.className = "catgroup";
+      const h = document.createElement("h3");
+      h.textContent = cat;
+      g.appendChild(h);
+      inCat.forEach(f => g.appendChild(card(f)));
+      host.appendChild(g);
+    });
+  });
+
+  const mvp = FEATURES.filter(f => state[f.id] === "mvp");
+  const fut = FEATURES.filter(f => state[f.id] === "future");
+  els.cntMvp.textContent = mvp.length + " features";
+  els.cntFut.textContent = fut.length + " features";
+
+  const custom = mvp.filter(f => f.tag === "custom").length;
+  const gates  = mvp.filter(f => f.tag === "gate").length;
+  const bits = [];
+  if (custom) bits.push(custom + (custom === 1 ? " feature in MVP needs" : " features in MVP need") + " custom blocks or bespoke — the standard Tapcart build no longer covers this scope");
+  if (gates)  bits.push(gates + " depend" + (gates === 1 ? "s" : "") + " on an unverified platform capability");
+  els.warnMvp.textContent = bits.join(". ");
+  els.warnMvp.classList.toggle("on", bits.length > 0);
+
+  const futGate = fut.filter(f => f.tag === "gate").length;
+  els.warnFut.textContent = futGate
+    ? futGate + " deferred item" + (futGate === 1 ? "" : "s") + " depend on platform properties that can't be added later — they still have to be verified before choosing a vendor"
+    : "";
+  els.warnFut.classList.toggle("on", futGate > 0);
+
+  status();
+}
+
+function when(iso){
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d)) return "";
+  const today = new Date().toDateString() === d.toDateString();
+  const time = d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+  return today ? time : d.toLocaleDateString([], { day:"numeric", month:"short" }) + " " + time;
+}
+
+function setStatus(text, tone){
+  els.dot.className = "dot" + (tone ? " " + tone : "");
+  els.statusText.textContent = text;
+}
+
+function status(){
+  if (dirty) return setStatus("Unsaved changes", "warn");
+  if (mode === "shared") {
+    const by = lastBy ? " by " + lastBy : "";
+    const at = when(lastAt);
+    return setStatus("Shared scope — saved" + by + (at ? " · " + at : ""));
+  }
+  if (mode === "local") {
+    return setStatus(store.available
+      ? "Saved in this browser only — shared scope unreachable"
+      : "Preview mode — changes won't persist here", store.available ? "warn" : "off");
+  }
+  setStatus("Preview mode — changes won't persist here", "off");
+}
+
+function showConflict(current, mine){
+  conflict = current;
+  const by = current.updated_by ? current.updated_by : "Someone else";
+  const at = when(current.updated_at);
+  els.bannerText.textContent = by + " saved a different version" + (at ? " at " + at : "") +
+    ". " + (mine ? "Your changes are still on screen but haven't been saved."
+                 : "The board on screen is now out of date.");
+  els.banner.hidden = false;
+}
+
+function hideConflict(){ conflict = null; els.banner.hidden = true; }
+
+function move(id, bucket){
+  if (state[id] === bucket) return;
+  state[id] = bucket;
+  dirty = true;
+  render();
+}
+
+["mvp","future"].forEach(b => {
+  const col = document.getElementById("col-" + b);
+  col.addEventListener("dragover", e => { e.preventDefault(); col.classList.add("over"); });
+  col.addEventListener("dragleave", () => col.classList.remove("over"));
+  col.addEventListener("drop", e => {
+    e.preventDefault();
+    col.classList.remove("over");
+    const id = e.dataTransfer.getData("text/plain");
+    if (byId(id)) move(id, b);
+  });
+});
+
+/* ---------- shared scope ---------- */
+
+/* Adopt whatever the server holds. Used on load, after losing a race, and when
+   a poll finds someone else has saved while this board sat clean. */
+function adopt(row){
+  applyBuckets(row.buckets);
+  version = row.version;
+  lastBy = row.updated_by;
+  lastAt = row.updated_at;
+  dirty = false;
+  mode = "shared";
+  store.write(state);
+  hideConflict();
+  render();
+}
+
+async function connect(){
+  let r;
+  try { r = await fetch(API, { cache:"no-store" }); }
+  catch(e) { mode = store.available ? "local" : "preview"; return status(); }
+
+  if (r.ok) return adopt(await r.json());
+
+  /* 503 unconfigured, 404 no row, anything else — fall back rather than block. */
+  mode = store.available ? "local" : "preview";
+  applyBuckets(store.read());
+  render();
+}
+
+async function push(baseVersion){
+  const r = await fetch(API, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ buckets: state, version: baseVersion, updatedBy: editorName })
+  });
+  if (r.status === 409) return { conflict: (await r.json()).current };
+  if (!r.ok) throw new Error("save failed: " + r.status);
+  return { row: await r.json() };
+}
+
+async function save(){
+  if (mode !== "shared") {
+    if (store.write(state)) { dirty = false; status(); }
+    else setStatus("Can't save here — use Download JSON to keep this scope", "warn");
+    return;
+  }
+  setStatus("Saving…");
+  try {
+    const out = await push(version);
+    if (out.conflict) { status(); return showConflict(out.conflict, true); }
+    version = out.row.version;
+    lastBy = out.row.updated_by;
+    lastAt = out.row.updated_at;
+    dirty = false;
+    store.write(state);
+    hideConflict();
+    status();
+  } catch(e) {
+    setStatus("Couldn't reach the shared scope — use Download JSON", "warn");
+  }
+}
+
+/* Polls for other people's saves. A clean board adopts silently; a dirty one
+   only gets warned, because discarding unsaved edits is the user's call. */
+async function poll(){
+  if (mode !== "shared" || conflict) return;
+  try {
+    const r = await fetch(API, { cache:"no-store" });
+    if (!r.ok) return;
+    const row = await r.json();
+    if (row.version === version) return;
+    if (dirty) showConflict(row, true);
+    else adopt(row);
+  } catch(e) { /* transient — the next poll will pick it up */ }
+}
+
+document.getElementById("save").addEventListener("click", save);
+
+document.getElementById("taketheirs").addEventListener("click", () => {
+  if (conflict) adopt(conflict);
+});
+document.getElementById("keepmine").addEventListener("click", async () => {
+  if (!conflict) return;
+  const base = conflict.version;   /* rebase onto theirs, then overwrite */
+  hideConflict();
+  setStatus("Saving…");
+  try {
+    const out = await push(base);
+    if (out.conflict) { status(); return showConflict(out.conflict, true); }
+    version = out.row.version;
+    lastBy = out.row.updated_by;
+    lastAt = out.row.updated_at;
+    dirty = false;
+    store.write(state);
+    status();
+  } catch(e) {
+    setStatus("Couldn't reach the shared scope — use Download JSON", "warn");
+  }
+});
+document.getElementById("dismiss").addEventListener("click", hideConflict);
+
+els.who.value = editorName;
+els.who.addEventListener("input", () => {
+  editorName = els.who.value.trim();
+  store.setName(editorName);
+});
+
+setInterval(poll, POLL_MS);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(); });
+document.getElementById("download").addEventListener("click", () => {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    source: mode === "shared" ? "shared scope" : "this browser only",
+    version: mode === "shared" ? version : null,
+    lastSavedBy: mode === "shared" ? lastBy : null,
+    unsavedChanges: dirty,
+    mvp: FEATURES.filter(f => state[f.id]==="mvp").map(f => ({ label:f.label, cat:f.cat, tag:f.tag })),
+    future: FEATURES.filter(f => state[f.id]==="future").map(f => ({ label:f.label, cat:f.cat, tag:f.tag })),
+    buckets: state
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "app-scope.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+document.getElementById("copy").addEventListener("click", async () => {
+  const txt = JSON.stringify(state, null, 2);
+  try { await navigator.clipboard.writeText(txt); els.statusText.textContent = "Copied to clipboard"; }
+  catch(e) { els.statusText.textContent = "Clipboard blocked — use Download JSON"; }
+});
+document.getElementById("reset").addEventListener("click", () => {
+  FEATURES.forEach(f => state[f.id] = f.bucket);
+  if (mode === "shared") {
+    dirty = true;   /* the shared scope only changes when you press Save */
+  } else {
+    store.clear();
+    dirty = false;
+  }
+  render();
+});
+
+/* ---------- matrix ---------- */
+const U = "?";
+const CRITERIA = [
+  { name:"Cost over three years",   scores:[2,4,3,U], weighted:false },
+  { name:"Customisation ceiling",   scores:[5,2,4,3], weighted:false },
+  { name:"Managing a subscription", scores:[5,4,4,U], weighted:true  },
+  { name:"Selling a subscription",  scores:[5,5,5,4], weighted:true  },
+  { name:"Klaviyo and Attentive",   scores:[4,5,5,4], weighted:false },
+  { name:"Time to launch",          scores:[1,5,3,4], weighted:false },
+  { name:"Ongoing dev burden",      scores:[1,5,3,4], weighted:false }
+];
+const mbody = document.querySelector("#matrix tbody");
+CRITERIA.forEach(c => {
+  const tr = document.createElement("tr");
+  if (c.weighted) tr.className = "weighted";
+  const th = document.createElement("th");
+  th.scope = "row";
+  th.innerHTML = c.name + (c.weighted ? '<span class="wtag">&times;2</span>' : "");
+  tr.appendChild(th);
+  c.scores.forEach(v => {
+    const td = document.createElement("td");
+    if (v === U) td.innerHTML = '<span class="unk">?</span><span class="unk-l">unknown</span>';
+    else {
+      const pips = document.createElement("span");
+      pips.className = "pips s" + v;
+      pips.setAttribute("role","img");
+      pips.setAttribute("aria-label", v + " out of 5");
+      for (let i=1;i<=5;i++){
+        const p = document.createElement("span");
+        p.className = "pip" + (i<=v ? " on" : "");
+        pips.appendChild(p);
+      }
+      td.appendChild(pips);
+      const n = document.createElement("span");
+      n.className = "score-n"; n.textContent = v;
+      td.appendChild(n);
+    }
+    tr.appendChild(td);
+  });
+  mbody.appendChild(tr);
+});
+const totalCells = document.querySelectorAll("#matrix tfoot .total");
+const rankCells  = document.querySelectorAll("#matrix tfoot .rank");
+const weightBox  = document.getElementById("weight");
+function renderMatrix(){
+  const on = weightBox.checked;
+  document.body.classList.toggle("weighting", on);
+  const data = [0,1,2,3].map(i => {
+    let sum=0, scored=0, max=0;
+    CRITERIA.forEach(c => {
+      const m = (c.weighted && on) ? 2 : 1;
+      max += 5*m;
+      if (c.scores[i] !== U){ sum += c.scores[i]*m; scored++; }
+    });
+    return { sum, scored, max, complete: scored === CRITERIA.length };
+  });
+  const done = data.filter(d => d.complete).map(d => d.sum);
+  const best = Math.max(...done);
+  const ordered = [...done].sort((a,b)=>b-a);
+  data.forEach((d,i) => {
+    totalCells[i].textContent = d.sum + " / " + d.max;
+    const row = totalCells[i].parentElement;
+    row.classList.toggle("lead", d.complete && d.sum === best);
+    row.classList.toggle("partial", !d.complete);
+    if (!d.complete) rankCells[i].textContent = d.scored + " of " + CRITERIA.length + " rows";
+    else if (d.sum === best) rankCells[i].textContent = "Leads";
+    else { const p = ordered.indexOf(d.sum)+1; rankCells[i].textContent = p + (p===2?"nd":p===3?"rd":"th"); }
+  });
+}
+weightBox.addEventListener("change", renderMatrix);
+
+const tabs = [...document.querySelectorAll(".tab")];
+tabs.forEach(tab => tab.addEventListener("click", () => {
+  tabs.forEach(t => {
+    const sel = t === tab;
+    t.setAttribute("aria-selected", sel);
+    document.getElementById(t.getAttribute("aria-controls")).hidden = !sel;
+  });
+}));
+
+applyBuckets(store.read());   /* paint the last known scope, then reconcile */
+render();
+renderMatrix();
+connect();
+</script>
+</body>
+</html>
