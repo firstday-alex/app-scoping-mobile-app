@@ -129,7 +129,14 @@
   .gatetable small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);
     margin-top:4px;line-height:1.4}
   .gatetable td.ok{color:var(--mint)} .gatetable td.mid{color:var(--teal)}
-  .gatetable td.unkc{color:var(--amber)}
+  .gatetable td.unkc{color:var(--amber)} .gatetable td.risk{color:var(--clay)}
+  .gatetable ul.clauses{margin:7px 0 0;padding-left:15px;font-weight:400;font-size:12.5px;
+    color:var(--muted);line-height:1.45}
+  .gatetable ul.clauses li{margin-bottom:3px}
+  .gatetable ul.clauses li:last-child{margin-bottom:0}
+  .gatetable ul.clauses b{color:var(--ink);font-weight:600}
+  .src{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);display:block;margin-top:6px}
   .gatefoot{margin:16px 0 0;font-size:13.5px;border-top:1px solid var(--hair);padding-top:14px}
 
   /* ---------- matrix ---------- */
@@ -163,6 +170,8 @@
     margin-top:5px}
   #matrix tbody th{font-weight:500;padding:13px 12px;border-bottom:1px solid var(--hair);
     font-size:14px;width:196px}
+  #matrix tbody th .cnote{display:block;font-weight:400;font-size:12px;color:var(--muted);
+    margin-top:5px;line-height:1.42}
   #matrix tbody td{padding:13px 12px;border-bottom:1px solid var(--hair);text-align:center}
   #matrix tbody tr:last-child th,#matrix tbody tr:last-child td{border-bottom:0}
   .weighted th{background:var(--shade)}
@@ -291,31 +300,38 @@
 <section class="panel" id="p-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
   <div class="gate">
     <h2>Three requirements that come before the score</h2>
-    <p class="h2note">From the CRM and lifecycle requirements. Each could rule out a platform option entirely, and none is verified for either vendor. A platform that fails the first two is not a cheaper version of bespoke &mdash; it's a different product.</p>
+    <p class="h2note">From the CRM and lifecycle requirements. Each could rule out a platform option entirely. Row one is now scored against Tapcart's own published capability description; rows two and three are unverified for both vendors. A platform that fails the first two is not a cheaper version of bespoke &mdash; it's a different product.</p>
     <table class="gatetable">
       <thead><tr><th scope="col">Requirement</th><th scope="col">Bespoke</th><th scope="col">Tapcart</th><th scope="col">Appbrew</th></tr></thead>
       <tbody>
         <tr>
-          <th scope="row">Push sends natively from Klaviyo<small>Marketing and transactional both live in the existing lifecycle ecosystem, not a second push engine running in parallel</small></th>
-          <td class="ok">By construction<small>Embed Klaviyo's SDK directly</small></td>
-          <td class="unkc">Unverified<small>Does Tapcart push send <em>from</em> Klaviyo, or does Tapcart own the engine and merely integrate?</small></td>
-          <td class="unkc">Unverified</td>
+          <th scope="row">Push runs on Klaviyo's profiles, segments and triggers<small>Four clauses, taken from Tapcart's own Klaviyo integration description. Only the fourth decides the architecture &mdash; the first three are true of any competent integration.</small>
+            <ul class="clauses">
+              <li>Targeted from Klaviyo User Profiles and Segments</li>
+              <li>Fired by Klaviyo flows and trigger&#8209;events, not hand&#8209;sent campaigns</li>
+              <li>Segmentable on behaviour and location</li>
+              <li><b>Sent by Klaviyo</b> &mdash; marketing and transactional both, not a second push engine reading Klaviyo's data</li>
+            </ul>
+            <span class="src">Source: vendor marketing copy, not a spec</span></th>
+          <td class="ok">By construction<small>Embed Klaviyo's SDK directly. All four clauses follow from the SDK being the sender.</small></td>
+          <td class="risk">First three claimed &mdash; fourth reads as no<small>Their page credits the automation to <em>prebuilt automated flows that connect to Klaviyo's User Profiles, Segments and Flows</em>. Tapcart's flows consuming Klaviyo's data is the parallel engine this row exists to exclude. Inferred from their wording, so not yet decisive &mdash; get clause four answered yes or no in writing.</small></td>
+          <td class="unkc">Unverified<small>Not yet asked</small></td>
         </tr>
         <tr>
           <th scope="row">Named behavioural events into Klaviyo<small>Screen viewed, product viewed, educational content actually watched &mdash; usable for segmentation, triggering and personalisation, in real time</small></th>
           <td class="ok">By construction<small>We define the schema</small></td>
           <td class="unkc">Unverified<small>Get the exact event and property list, and confirm they land as metrics rather than generic app activity</small></td>
-          <td class="unkc">Unverified</td>
+          <td class="unkc">Unverified<small>Not yet asked</small></td>
         </tr>
         <tr>
           <th scope="row">In-app messaging deployable without an app release<small>Lifecycle owns modals, banners, embedded cards and interstitials, targeted on subscription status and behaviour</small></th>
           <td class="mid">Only if built<small>Needs its own CMS and targeting layer &mdash; real scope</small></td>
           <td class="unkc">Unverified<small>Ask whether this is native or needs custom blocks</small></td>
-          <td class="unkc">Unverified</td>
+          <td class="unkc">Unverified<small>Not yet asked</small></td>
         </tr>
       </tbody>
     </table>
-    <p class="gatefoot">The third row is a platform property, not a feature that can be added later. If it needs custom blocks on Tapcart, the customised path stops being optional.</p>
+    <p class="gatefoot">The third row is a platform property, not a feature that can be added later. If it needs custom blocks on Tapcart, the customised path stops being optional.<br><br>Tapcart's Klaviyo integration is Enterprise&#8209;only, which the matrix below already assumes throughout &mdash; so it confirms the assumption rather than changing the arithmetic. It says nothing about which tier carries Stay&nbsp;Ai, which is still the first open question.</p>
   </div>
 
   <div class="control" style="margin-top:16px">
@@ -379,8 +395,8 @@
     <h2>Nine things to get in writing</h2>
     <p class="h2note">Everything in the matrix assumes Tapcart Enterprise. Most of these could change the arithmetic, and none were answered in Tapcart's last reply.</p>
     <ol>
-      <li><b>Which plan includes the Stay Ai integration, and does a success fee apply at that plan?</b><span>Their reply described the integration repeatedly without naming a tier, and the pricing section came through empty. Get the tier and the fee structure confirmed in one email.</span></li>
-      <li><b>Does push send from Klaviyo, or from your push engine?</b><span>A parallel push engine fails the requirement even if it &ldquo;integrates with Klaviyo&rdquo;.</span></li>
+      <li><b>Which plan includes the Stay Ai integration, and does a success fee apply at that plan?</b><span>Their reply described the integration repeatedly without naming a tier, and the pricing section came through empty. Your Klaviyo integration page names Enterprise outright &mdash; the Stay&nbsp;Ai material names no tier at all. Get the tier and the fee structure confirmed in one email.</span></li>
+      <li><b>Does push send from Klaviyo, or from your push engine?</b><span>Now the sharpest question of the nine. Your integration page credits the automation to <em>prebuilt automated flows</em> on Tapcart's side that connect to Klaviyo's profiles, segments and flows &mdash; which reads as Tapcart sending, using Klaviyo's data. A parallel push engine fails the requirement even if it integrates with Klaviyo. Yes or no, in writing.</span></li>
       <li><b>The exact list of events and properties that reach Klaviyo, and whether they're segmentable and triggerable.</b><span>Named events landing as metrics, in real time. Ask for the schema, not a logo.</span></li>
       <li><b>Can lifecycle deploy in-app modals, banners and embedded cards without an app release, and is that native or a custom block?</b><span>If it needs custom blocks, the phasing argument changes.</span></li>
       <li><b>Is the Stay Ai portal native UI or a webview inside the app?</b><span>&ldquo;Embedded natively&rdquo; leaves this open, and they offered to find screenshots rather than sending them.</span></li>
@@ -748,7 +764,8 @@ const CRITERIA = [
   { name:"Customisation ceiling",   scores:[5,2,4,3], weighted:false },
   { name:"Managing a subscription", scores:[5,4,4,U], weighted:true  },
   { name:"Selling a subscription",  scores:[5,5,5,4], weighted:true  },
-  { name:"Klaviyo and Attentive",   scores:[4,5,5,4], weighted:false },
+  { name:"Klaviyo and Attentive",   scores:[4,5,5,4], weighted:false,
+    note:"Integration breadth only: push targeted on Klaviyo profiles and segments, fired by Klaviyo flows and trigger-events, plus Klaviyo reviews and star ratings on product pages. Whether Klaviyo does the sending is the gate above, not this score." },
   { name:"Time to launch",          scores:[1,5,3,4], weighted:false },
   { name:"Ongoing dev burden",      scores:[1,5,3,4], weighted:false }
 ];
@@ -758,7 +775,8 @@ CRITERIA.forEach(c => {
   if (c.weighted) tr.className = "weighted";
   const th = document.createElement("th");
   th.scope = "row";
-  th.innerHTML = c.name + (c.weighted ? '<span class="wtag">&times;2</span>' : "");
+  th.innerHTML = c.name + (c.weighted ? '<span class="wtag">&times;2</span>' : "") +
+    (c.note ? '<span class="cnote">' + c.note + '</span>' : "");
   tr.appendChild(th);
   c.scores.forEach(v => {
     const td = document.createElement("td");
