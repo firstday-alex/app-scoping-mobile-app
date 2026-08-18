@@ -111,11 +111,14 @@
     color:var(--muted)}
   .legend span{display:flex;align-items:center;gap:6px}
 
-  /* ---------- gate ---------- */
-  .gate{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+  /* ---------- gate ----------
+     Named .gatebox, not .gate: a chip carries class="tag gate", so a bare
+     .gate container rule lands on the chip too and inflates it to 22px
+     padding on a 12px radius. */
+  .gatebox{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
     padding:22px;margin-top:16px}
-  .gate h2{font-size:19px;margin-bottom:4px}
-  .gate .h2note{margin-bottom:16px}
+  .gatebox h2{font-size:19px;margin-bottom:4px}
+  .gatebox .h2note{margin-bottom:16px}
   .gatetable{border-collapse:collapse;width:100%}
   .gatetable thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--muted);padding:0 12px 9px;
@@ -301,7 +304,7 @@
 
 <!-- ================= MATRIX ================= -->
 <section class="panel" id="p-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
-  <div class="gate">
+  <div class="gatebox">
     <h2>Three requirements that come before the score</h2>
     <p class="h2note">From the CRM and lifecycle requirements. Each could rule out a platform option entirely. Row one is met on Tapcart Enterprise &mdash; flows run through Klaviyo and Attentive &mdash; leaving campaign authoring as the open part of it. Rows two and three are still unverified for both vendors. A platform that fails the first two is not a cheaper version of bespoke &mdash; it's a different product.</p>
     <table class="gatetable">
