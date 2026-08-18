@@ -100,6 +100,8 @@
     padding:2px 6px;border-radius:3px;flex:none;margin-top:2px;white-space:nowrap}
   .tag.std{background:var(--shade);color:var(--muted)}
   .tag.custom{background:var(--hi);color:var(--mint)}
+  /* keep this modifier distinct from any container class named .gate:
+     a chip carries class="tag gate", so a bare .gate rule lands on it too */
   .tag.gate{background:var(--amberbg);color:var(--amber)}
   .move{border:0;background:none;color:var(--muted);cursor:pointer;font-size:14px;
     padding:0 2px;line-height:1.3;flex:none;border-radius:4px}
@@ -110,37 +112,6 @@
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;
     color:var(--muted)}
   .legend span{display:flex;align-items:center;gap:6px}
-
-  /* ---------- gate ----------
-     Named .gatebox, not .gate: a chip carries class="tag gate", so a bare
-     .gate container rule lands on the chip too and inflates it to 22px
-     padding on a 12px radius. */
-  .gatebox{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
-    padding:22px;margin-top:16px}
-  .gatebox h2{font-size:19px;margin-bottom:4px}
-  .gatebox .h2note{margin-bottom:16px}
-  .gatetable{border-collapse:collapse;width:100%}
-  .gatetable thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--muted);padding:0 12px 9px;
-    border-bottom:1px solid var(--hair);font-weight:600;vertical-align:bottom}
-  .gatetable thead th:first-child{padding-left:0;width:42%}
-  .gatetable tbody th{font-weight:500;font-size:14.5px;padding:14px 12px 14px 0;
-    border-bottom:1px solid var(--hair);vertical-align:top;width:42%}
-  .gatetable tbody td{padding:14px 12px;border-bottom:1px solid var(--hair);
-    vertical-align:top;font-size:13.5px;font-weight:500}
-  .gatetable tbody tr:last-child th,.gatetable tbody tr:last-child td{border-bottom:0}
-  .gatetable small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);
-    margin-top:4px;line-height:1.4}
-  .gatetable td.ok{color:var(--mint)} .gatetable td.mid{color:var(--teal)}
-  .gatetable td.unkc{color:var(--amber)} .gatetable td.risk{color:var(--clay)}
-  .gatetable ul.clauses{margin:7px 0 0;padding-left:15px;font-weight:400;font-size:12.5px;
-    color:var(--muted);line-height:1.45}
-  .gatetable ul.clauses li{margin-bottom:3px}
-  .gatetable ul.clauses li:last-child{margin-bottom:0}
-  .gatetable ul.clauses b{color:var(--ink);font-weight:600}
-  .src{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--muted);display:block;margin-top:6px}
-  .gatefoot{margin:16px 0 0;font-size:13.5px;border-top:1px solid var(--hair);padding-top:14px}
 
   /* ---------- matrix ---------- */
   .control{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
@@ -176,7 +147,8 @@
   #matrix tbody th .cnote{display:block;font-weight:400;font-size:12px;color:var(--muted);
     margin-top:5px;line-height:1.42}
   #matrix tbody td{padding:13px 12px;border-bottom:1px solid var(--hair);text-align:center}
-  #matrix tbody tr:last-child th,#matrix tbody tr:last-child td{border-bottom:0}
+  #matrix tbody:last-of-type tr:last-child th,
+  #matrix tbody:last-of-type tr:last-child td{border-bottom:0}
   .weighted th{background:var(--shade)}
   .wtag{font-family:var(--mono);font-size:10px;color:var(--teal);margin-left:6px;
     opacity:0;transition:opacity .2s ease}
@@ -198,6 +170,23 @@
     text-transform:uppercase;color:var(--muted);margin-top:4px}
   .lead .total{color:var(--mint)} .partial .total{color:var(--amber)}
 
+  /* requirement rows living inside the matrix */
+  #matrix tbody.req td{vertical-align:top;text-align:left}
+  #matrix tr.secthead th{font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--teal);font-weight:600;padding:16px 12px 8px 0;
+    border-bottom:1px solid var(--hair);background:var(--shade)}
+  #matrix tr.secthead th.plain{background:var(--shade)}
+  .vlab{font-weight:600;font-size:13.5px;display:block}
+  .vsub{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:4px;
+    line-height:1.42;max-width:34ch}
+  td.v-met .vlab{color:var(--mint)} td.v-part .vlab{color:var(--clay)}
+  td.v-cond .vlab{color:var(--teal)} td.v-unk .vlab{color:var(--amber)}
+  .reqclauses{margin:6px 0 0;padding-left:15px;font-weight:400;font-size:12px;
+    color:var(--muted);line-height:1.45}
+  .reqclauses b{color:var(--ink);font-weight:600}
+  .src{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);display:block;margin-top:6px}
+
   .note{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
     padding:18px 22px;margin-top:16px}
   .note h3{font-family:var(--mono);font-size:11px;letter-spacing:.11em;
@@ -205,6 +194,9 @@
   .note p{margin:0;font-size:14px}
   .note.amberish{background:var(--amberbg);border-color:var(--amberline)}
   .note.amberish h3{color:var(--amber)}
+  .note ul.findings{margin:10px 0 0;padding-left:18px;font-size:13.5px;line-height:1.5}
+  .note ul.findings li{margin-bottom:7px}
+  .note ul.findings li:last-child{margin-bottom:0}
   .note.dark{background:var(--ink);color:#DCE9EC;border-color:var(--ink)}
   .note.dark h3{font-family:var(--display);font-size:19px;font-weight:600;color:#fff;
     margin:0 0 9px;letter-spacing:0;text-transform:none}
@@ -244,7 +236,7 @@
 <header>
   <p class="eyebrow">Decision · August 2026</p>
   <h1>App scope and options</h1>
-  <p class="sub">Drag features between MVP and future phases. Three platform requirements sit above the option matrix because they could rule an option out before scoring begins.</p>
+  <p class="sub">Drag features between MVP and future phases. Three platform requirements sit at the top of the option matrix, unscored, because they could rule an option out before scoring begins.</p>
 </header>
 
 <nav role="tablist" aria-label="Sections">
@@ -304,42 +296,7 @@
 
 <!-- ================= MATRIX ================= -->
 <section class="panel" id="p-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
-  <div class="gatebox">
-    <h2>Three requirements that come before the score</h2>
-    <p class="h2note">From the CRM and lifecycle requirements. Each could rule out a platform option entirely. Row one is met on Tapcart Enterprise &mdash; flows run through Klaviyo and Attentive &mdash; leaving campaign authoring as the open part of it. Rows two and three are still unverified for both vendors. A platform that fails the first two is not a cheaper version of bespoke &mdash; it's a different product.</p>
-    <table class="gatetable">
-      <thead><tr><th scope="col">Requirement</th><th scope="col">Bespoke</th><th scope="col">Tapcart</th><th scope="col">Appbrew</th></tr></thead>
-      <tbody>
-        <tr>
-          <th scope="row">Push runs on Klaviyo's profiles, segments and triggers<small>The first three clauses are true of any competent integration. The last two are the ones that decide where lifecycle actually works, and they have turned out to have different answers.</small>
-            <ul class="clauses">
-              <li>Targeted from Klaviyo User Profiles and Segments</li>
-              <li>Fired by Klaviyo flows and trigger&#8209;events</li>
-              <li>Segmentable on behaviour and location</li>
-              <li><b>Flows run through Klaviyo and Attentive</b> &mdash; automated lifecycle sends stay in the ecosystem that already owns them</li>
-              <li><b>Campaigns authored in Klaviyo too</b> &mdash; one place to write a push, not two</li>
-            </ul>
-            <span class="src">Vendor capability page, plus confirmation on flows</span></th>
-          <td class="ok">By construction<small>Embed Klaviyo's SDK directly. Both flows and campaigns follow from the SDK being the sender.</small></td>
-          <td class="ok">Fulfilled on flows<small>Flows go through Klaviyo and Attentive, which is the clause that carries lifecycle automation and the reason this row sits above the score. Campaign authoring may still have to happen in Tapcart &mdash; possible either way, but doing it properly is significant custom work. Treated as met; the campaign split is what's left.</small></td>
-          <td class="unkc">Unverified<small>Not yet asked</small></td>
-        </tr>
-        <tr>
-          <th scope="row">Named behavioural events into Klaviyo<small>Screen viewed, product viewed, educational content actually watched &mdash; usable for segmentation, triggering and personalisation, in real time</small></th>
-          <td class="ok">By construction<small>We define the schema</small></td>
-          <td class="unkc">Unverified<small>Get the exact event and property list, and confirm they land as metrics rather than generic app activity</small></td>
-          <td class="unkc">Unverified<small>Not yet asked</small></td>
-        </tr>
-        <tr>
-          <th scope="row">In-app messaging deployable without an app release<small>Lifecycle owns modals, banners, embedded cards and interstitials, targeted on subscription status and behaviour</small></th>
-          <td class="mid">Only if built<small>Needs its own CMS and targeting layer &mdash; real scope</small></td>
-          <td class="unkc">Unverified<small>Ask whether this is native or needs custom blocks</small></td>
-          <td class="unkc">Unverified<small>Not yet asked</small></td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="gatefoot">The third row is a platform property, not a feature that can be added later. If it needs custom blocks on Tapcart, the customised path stops being optional.<br><br>Tapcart's Klaviyo integration is Enterprise&#8209;only, which the matrix below already assumes throughout &mdash; so it confirms the assumption rather than changing the arithmetic. It says nothing about which tier carries Stay&nbsp;Ai, which is still the first open question.<br><br>The campaign half of row one needs pinning down before it can be called closed. If campaigns can only be authored in Tapcart, lifecycle writes push in two places &mdash; an ongoing operational cost rather than a one&#8209;off build. It now sits alongside a larger piece of the same work: wiring segments, events and identity from Tapcart into Klaviyo, Attentive and Rivo is custom, and it is all in MVP. Price the campaign question as part of that build rather than as a separate line.</p>
-  </div>
+  <p class="h2note" style="margin:0 0 18px;max-width:76ch">Three platform requirements sit at the top of the matrix, above the scored criteria. Each could rule an option out before scoring begins, so they are not scored &mdash; they qualify. A platform that fails the first two is not a cheaper version of bespoke, it's a different product.</p>
 
   <div class="control" style="margin-top:16px">
     <label class="switch">
@@ -361,7 +318,8 @@
           <th scope="col"><span class="fam">Platform</span><span class="opt-name">Appbrew</span><span class="opt-cost">Unquoted</span></th>
         </tr>
       </thead>
-      <tbody></tbody>
+      <tbody class="req" id="reqbody"></tbody>
+      <tbody id="critbody"></tbody>
       <tfoot><tr><th scope="row">Total</th>
         <td><span class="total"></span><span class="rank"></span></td>
         <td><span class="total"></span><span class="rank"></span></td>
@@ -383,9 +341,23 @@
     </div>
   </div>
 
+  <div class="note">
+    <h3>What desk research settled</h3>
+    <p>Four things that were open are now answered from published vendor documentation, and none of them needed an email.</p>
+    <ul class="findings">
+      <li><b>Stay&nbsp;Ai on Tapcart is Enterprise&#8209;only.</b> Stay&nbsp;Ai's own help centre states the integration is available to Tapcart Enterprise customers only, which settles the tier half of question one. The success fee is still unanswered.</li>
+      <li><b>The Stay&nbsp;Ai portal is a webview, not native UI.</b> It requires a Web&nbsp;Bridge SDK and loads the existing portal inside the app without redirecting to a browser. That is an embedded web view by construction, so &ldquo;embedded natively&rdquo; meant embedded, not native.</li>
+      <li><b>A Tapcart&ndash;Rivo integration exists, in beta, via custom blocks.</b> Rivo's product page describes showing loyalty data and redeeming rewards through custom blocks, with the refer&#8209;a&#8209;friend page as a custom screen. Their help centre calls the integration beta, needing a Rivo CSM to enable it and coordination across Rivo, Tapcart and a development team. Reads cover points balance, credits and transaction history; writes cover store&#8209;credit redemption with automatic discount code generation.</li>
+      <li><b>Appbrew publishes its pricing.</b> Their Shopify App Store listing lists Starter at $199, Pro at $599 and Enterprise at $1,099 a month, with native subscription management appearing only at Enterprise. Klaviyo and ReCharge are listed under Works with. <b>Stay&nbsp;Ai is not.</b></li>
+    </ul>
+    <p style="margin-top:10px">Two cautions. Rivo's product page says custom blocks while its help centre article doesn't mention them &mdash; worth confirming which is current, since it decides whether loyalty is configuration or build. And third&#8209;party blogs quoted Appbrew's Pro tier at $499 against the $599 on the App Store listing, which is the same unreliability that got pricing pulled from this document in the first place. The figures above are from the vendors' own pages.</p>
+  </div>
+
   <div class="note amberish">
-    <h3>Why Appbrew has two blanks</h3>
-    <p>Their pricing isn't published and their Stay&nbsp;Ai depth is a vendor claim we haven't tested, so both are shown as unknown rather than guessed. Its total is scored out of five rows, not seven, and isn't directly comparable until those land.</p>
+    <h3>The pattern under all three requirements</h3>
+    <p>Read together rather than row by row, the three verdicts say the same thing. Tapcart's capability is real and it is <em>Tapcart's</em>. Flows run through Klaviyo and Attentive, but composition &mdash; campaigns, segments, in&#8209;app messages, A/B tests &mdash; happens in Tapcart's own dashboard, against its own Segment Builder.</p>
+    <p>That is not a failure, it's a different operating model: Klaviyo becomes the data layer and Tapcart becomes the messaging surface, instead of Klaviyo owning both. It is worth deciding whether that is acceptable <b>before</b> negotiating price, because no amount of custom&#8209;block spend changes it. Custom blocks alter what a screen renders, not who owns the send.</p>
+    <p>Appbrew still carries two blanks for the opposite reason to before: its pricing is now public, but nothing published shows Stay&nbsp;Ai support at all. Its total is scored out of five rows, not seven, and isn't directly comparable until that lands.</p>
   </div>
 
   <div class="note dark">
@@ -400,19 +372,19 @@
 <!-- ================= OPEN ================= -->
 <section class="panel" id="p-open" role="tabpanel" aria-labelledby="tab-open" hidden>
   <div class="q">
-    <h2>Ten things to get in writing</h2>
-    <p class="h2note">Everything in the matrix assumes Tapcart Enterprise. Most of these could change the arithmetic, and none were answered in Tapcart's last reply.</p>
+    <h2>Ten things still to get in writing</h2>
+    <p class="h2note">Everything in the matrix assumes Tapcart Enterprise. Desk research closed four of the previous ten from published vendor documentation &mdash; the Stay&nbsp;Ai tier, the portal being a webview, the existence of a Rivo integration, and Appbrew's pricing. What follows is what documentation cannot answer, plus one new question the research created.</p>
     <ol>
-      <li><b>Which plan includes the Stay Ai integration, and does a success fee apply at that plan?</b><span>Their reply described the integration repeatedly without naming a tier, and the pricing section came through empty. Your Klaviyo integration page names Enterprise outright &mdash; the Stay&nbsp;Ai material names no tier at all. Get the tier and the fee structure confirmed in one email.</span></li>
-      <li><b>Campaigns: can they be authored in Klaviyo, or only in Tapcart?</b><span>Flows are settled &mdash; they run through Klaviyo and Attentive. Campaigns are not. If they can only be written in Tapcart, lifecycle authors push in two systems permanently. Ask what it takes to author campaigns from Klaviyo, and specifically whether that is configuration or a custom block.</span></li>
-      <li><b>The exact list of events and properties that reach Klaviyo, and whether they're segmentable and triggerable.</b><span>Named events landing as metrics, in real time. Ask for the schema, not a logo.</span></li>
-      <li><b>Do you integrate with Rivo, and is it native, a premium integration or a custom block?</b><span>Ask about both halves separately: reading points balances and tier status, and writing redemptions back. A read&#8209;only integration covers the first and fails the second. Both are MVP now, and Rivo appears nowhere in anything sent so far. If it needs a custom block it joins the segments and identity work rather than sitting beside it &mdash; and if there is no integration at all, loyalty in MVP is a bespoke build on any Tapcart path.</span></li>
-      <li><b>Can lifecycle deploy in-app modals, banners and embedded cards without an app release, and is that native or a custom block?</b><span>If it needs custom blocks, the phasing argument changes.</span></li>
-      <li><b>Is the Stay Ai portal native UI or a webview inside the app?</b><span>&ldquo;Embedded natively&rdquo; leaves this open, and they offered to find screenshots rather than sending them.</span></li>
-      <li><b>Who maintains custom blocks through platform updates, and does Enterprise support cover them?</b><span>Decides whether custom blocks are an asset or a liability we own.</span></li>
-      <li><b>Does &ldquo;managed Apple &amp; Google developer portal&rdquo; mean they administer accounts we own, or hold them?</b><span>The lock-in question. We need the accounts, the listing and the push tokens.</span></li>
-      <li><b>Appbrew: fixed pricing in writing, and a live Stay Ai demo on our own catalogue.</b><span>Fills the two blanks in the matrix, and it's the only pricing leverage we have.</span></li>
-      <li><b>Two reference customers on Stay Ai at similar revenue, on the phone.</b><span>Kaged and Credo are Tapcart's chosen references. Ask specifically for a Stay Ai brand.</span></li>
+      <li><b>Does a success fee apply to Stay&nbsp;Ai at Enterprise?</b><span>The tier is settled &mdash; Stay&nbsp;Ai's help centre says Tapcart Enterprise only. The fee structure was never stated and their pricing section came through empty. This is now a one&#8209;line answer.</span></li>
+      <li><b>Which subscription actions does the embedded portal actually support?</b><span>New, and it matters. Stay&nbsp;Ai's Tapcart article lists skipping, swapping, discount codes, add&#8209;ons and cancellation with a save flow &mdash; and does not mention pause, frequency change, or payment and address updates. Tapcart's own page does claim frequency. Pause, frequency and payment/address are all MVP features on the board, so if the portal omits them, three MVP rows are wrong.</span></li>
+      <li><b>Campaigns: can they be authored in Klaviyo, or only in Tapcart?</b><span>Flows are settled. Campaigns are not, and nothing published resolves it. If they can only be written in Tapcart, lifecycle authors push in two systems permanently. Ask specifically whether that is configuration or a custom block.</span></li>
+      <li><b>The exact list of events and properties that reach Klaviyo, and whether they're segmentable and triggerable.</b><span>Named events landing as metrics, in real time. No published source lists them. Ask for the schema, not a logo.</span></li>
+      <li><b>Rivo: is the beta generally available, does it expose tier status, and who builds and owns the custom blocks?</b><span>The integration exists and is delivered through custom blocks, so loyalty in MVP is build rather than configuration. Their help centre calls it beta and requires coordination across three parties. Confirm it is production&#8209;ready, that tier status and not just points balance is available, and whose budget the blocks come from.</span></li>
+      <li><b>Can Klaviyo drive in&#8209;app messages, or only Tapcart's Inbox?</b><span>Deploying without an app release is settled &mdash; App Studio does that. What isn't settled is whether lifecycle can target and trigger those messages from Klaviyo, or whether they must be built in Tapcart's Segment Builder. Same shape as the campaign question, and the answer is probably the same.</span></li>
+      <li><b>Who maintains custom blocks through platform updates, and does Enterprise support cover them?</b><span>Now the most expensive unknown on the list. MVP needs custom blocks for identity, events, opt&#8209;in, loyalty and rewards. This decides whether that is an asset or a liability we own forever.</span></li>
+      <li><b>Does &ldquo;managed Apple &amp; Google developer portal&rdquo; mean they administer accounts we own, or hold them?</b><span>The lock&#8209;in question. We need the accounts, the listing and the push tokens.</span></li>
+      <li><b>Appbrew: does Stay&nbsp;Ai work at all, and a live demo on our own catalogue.</b><span>Pricing is answered &mdash; $199, $599 and $1,099 a month, published. The harder gap is that Stay&nbsp;Ai appears nowhere in their listing while ReCharge does. If there is no Stay&nbsp;Ai support, Appbrew is not a candidate regardless of price.</span></li>
+      <li><b>Two reference customers on Stay&nbsp;Ai at similar revenue, on the phone.</b><span>Kaged and Credo are Tapcart's chosen references. Ask specifically for a Stay&nbsp;Ai brand, and ask them where they author campaigns.</span></li>
     </ol>
   </div>
 
@@ -429,6 +401,7 @@
 
 <footer>
   <p><strong>Business case behind this.</strong> 95,753 active subscriptions losing roughly 14% a month; 91% of Shopify revenue subscription&#8209;linked; 93% of sessions on mobile. A sustained one&#8209;point churn improvement is worth about $3.1M in annual run&#8209;rate revenue. Via Omni &mdash; topics <code>stay_ai</code>, <code>performance</code>, <code>ga4_sessions_wip</code>, July 2026.</p>
+  <p><strong>Desk research, August 2026.</strong> Verdicts marked as sourced come from vendor documentation read directly: Stay&nbsp;Ai's Tapcart integration article, Tapcart's Klaviyo integration and features pages, Klaviyo's mobile push documentation, Rivo's Tapcart integration page and help centre article, and Appbrew's Shopify App Store listing. Where a vendor's own pages disagree with each other, or say nothing, the cell says so rather than resolving it. Nothing here replaces getting it in writing.</p>
   <p><strong>Pricing deliberately omitted.</strong> Earlier figures came from third&#8209;party sources that Tapcart's current pricing page contradicts. Platform cost is identical across both Tapcart columns, so it can't break the tie between them &mdash; but it does affect go/no&#8209;go, and it's still unquoted.</p>
 </footer>
 </div>
@@ -786,7 +759,85 @@ const CRITERIA = [
   { name:"Time to launch",          scores:[1,5,3,4], weighted:false },
   { name:"Ongoing dev burden",      scores:[1,5,3,4], weighted:false }
 ];
-const mbody = document.querySelector("#matrix tbody");
+
+/* ---------- requirements ----------
+   These live in the matrix but are deliberately excluded from the totals: they
+   qualify an option rather than scoring it. Verdicts carry their evidence, and
+   anything sourced from a vendor's published material says so. */
+const REQUIREMENTS = [
+  {
+    name: "Push runs on Klaviyo's profiles, segments and triggers",
+    note: "Marketing and transactional both living in the lifecycle ecosystem that already owns them, rather than a second push engine running in parallel.",
+    clauses: [
+      "Targeted from Klaviyo User Profiles and Segments",
+      "Fired by Klaviyo flows and trigger&#8209;events",
+      "<b>Flows run through Klaviyo and Attentive</b>",
+      "<b>Campaigns authored in Klaviyo too</b> &mdash; one place to write a push, not two"
+    ],
+    src: "Tapcart Klaviyo page; flows confirmed directly",
+    v: [
+      ["met",  "By construction", "Klaviyo's SDK is the sender, so flows and campaigns both originate there."],
+      ["part", "Flows yes, authoring no", "Flows confirmed through Klaviyo and Attentive. But Tapcart ships its own Segment Builder and campaign composer, and neither Tapcart's nor Klaviyo's published material states that Klaviyo does the sending. Campaign authoring reads as Tapcart's surface."],
+      ["part", "Same as standard", "Custom blocks change what a screen can render, not where a push gets composed."],
+      ["unk",  "Klaviyo listed, depth untested", "Klaviyo appears under Works with on their Shopify listing. Nothing published on whether Klaviyo sends."]
+    ]
+  },
+  {
+    name: "Named behavioural events into Klaviyo",
+    note: "Screen viewed, product viewed, educational content actually watched &mdash; usable for segmentation, triggering and personalisation, in real time.",
+    v: [
+      ["met", "By construction", "We define the schema."],
+      ["unk", "No published list", "Nothing public names the events, or confirms they arrive as Klaviyo metrics rather than generic app activity. Ask for the schema, not the logo."],
+      ["unk", "Same as standard", "Custom blocks can emit events, but that is scope you own, not a capability they ship."],
+      ["unk", "Not yet asked", ""]
+    ]
+  },
+  {
+    name: "In-app messaging deployable without an app release",
+    note: "Lifecycle owns modals, banners, embedded cards and interstitials, targeted on subscription status and behaviour.",
+    src: "Tapcart features page",
+    v: [
+      ["cond", "Only if built", "Needs its own CMS and targeting layer &mdash; real scope."],
+      ["part", "Deployable, but Tapcart owns it", "An Inbox message centre, a Segment Builder over purchase history, browsing behaviour and account attributes, and App Studio publishing with no app store release. A/B testing is Enterprise&#8209;only. All of it authored in Tapcart's dashboard rather than Klaviyo &mdash; so the without&#8209;a&#8209;release half passes and the lifecycle&#8209;owns&#8209;it half does not."],
+      ["part", "Same, plus custom blocks", "Custom blocks widen what a message can contain. They do not move authoring into Klaviyo."],
+      ["unk",  "Not yet asked", "Their Pro tier lists A/B testing and AI-assisted blocks. Nothing published on lifecycle-driven in-app messaging."]
+    ]
+  }
+];
+
+function sectionRow(text){
+  const tr = document.createElement("tr");
+  tr.className = "secthead";
+  const th = document.createElement("th");
+  th.colSpan = 5;
+  th.textContent = text;
+  tr.appendChild(th);
+  return tr;
+}
+
+const rbody = document.getElementById("reqbody");
+rbody.appendChild(sectionRow("Requirements — these qualify an option, they are not scored"));
+REQUIREMENTS.forEach(r => {
+  const tr = document.createElement("tr");
+  const th = document.createElement("th");
+  th.scope = "row";
+  th.innerHTML = r.name +
+    '<span class="cnote">' + r.note + '</span>' +
+    (r.clauses ? '<ul class="reqclauses">' + r.clauses.map(c => "<li>" + c + "</li>").join("") + '</ul>' : "") +
+    (r.src ? '<span class="src">' + r.src + '</span>' : "");
+  tr.appendChild(th);
+  r.v.forEach(([state, label, sub]) => {
+    const td = document.createElement("td");
+    td.className = "v-" + state;
+    td.innerHTML = '<span class="vlab">' + label + '</span>' +
+      (sub ? '<span class="vsub">' + sub + '</span>' : "");
+    tr.appendChild(td);
+  });
+  rbody.appendChild(tr);
+});
+
+const mbody = document.getElementById("critbody");
+mbody.appendChild(sectionRow("Scored criteria"));
 CRITERIA.forEach(c => {
   const tr = document.createElement("tr");
   if (c.weighted) tr.className = "weighted";
