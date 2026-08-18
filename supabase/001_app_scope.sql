@@ -21,7 +21,7 @@ create table if not exists public.app_scope (
 -- authenticated roles get nothing, so the table is unreachable from the browser.
 alter table public.app_scope enable row level security;
 
--- Seed the live scope with the board's defaults: 30 in MVP, 26 in future phases.
+-- Seed the live scope with the board's defaults: 31 in MVP, 25 in future phases.
 -- Any feature id missing from this map falls back to its default in the page,
 -- so adding features to the board later does not require a migration.
 insert into public.app_scope (id, buckets, version, updated_by)
@@ -66,7 +66,7 @@ values (
       "upsell": "future",
       "dynperso": "future",
       "profperso": "future",
-      "rewards": "future",
+      "rewards": "mvp",
       "gift": "future",
       "referral": "future",
       "routine": "future",
