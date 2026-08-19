@@ -187,6 +187,31 @@
   .src{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
     color:var(--muted);display:block;margin-top:6px}
 
+  /* ---------- goals ---------- */
+  .goals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+  .goal{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px}
+  .goal .num{font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--teal)}
+  .goal h3{font-family:var(--display);font-size:19px;font-weight:600;margin:0;
+    letter-spacing:-.01em;line-height:1.15}
+  .phases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .phase{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:18px}
+  .phase.later{background:#F5F8F7}
+  .phase .phead{display:flex;align-items:baseline;gap:9px;margin-bottom:10px}
+  .phase h3{font-family:var(--display);font-size:20px;font-weight:600;margin:0;
+    letter-spacing:-.01em}
+  .phase ul{margin:0;padding-left:16px;font-size:13.5px;color:var(--muted);line-height:1.5}
+  .tbd{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);background:var(--shade);border:1px dashed var(--hair);border-radius:6px;
+    padding:5px 9px;display:inline-block}
+  .kpi{display:block;border-top:1px solid var(--hair);margin-top:2px;padding-top:11px}
+  .kpi .klab{font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--teal);display:block;margin-bottom:3px}
+  .kpi .kval{font-family:var(--display);font-size:18px;font-weight:600;
+    letter-spacing:-.01em;color:var(--ink)}
+  @media (max-width:820px){.goals,.phases{grid-template-columns:1fr}}
+
   .note{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
     padding:18px 22px;margin-top:16px}
   .note h3{font-family:var(--mono);font-size:11px;letter-spacing:.11em;
@@ -236,14 +261,52 @@
 <header>
   <p class="eyebrow">Decision · August 2026</p>
   <h1>App scope and options</h1>
-  <p class="sub">Drag features between MVP and future phases. Three platform requirements sit at the top of the option matrix, unscored, because they could rule an option out before scoring begins.</p>
+  <p class="sub">Drag features between MVP and future phases. One platform requirement sits at the top of the option matrix, unscored, because it could rule an option out before scoring begins.</p>
 </header>
 
 <nav role="tablist" aria-label="Sections">
+  <button class="tab" role="tab" id="tab-goals" aria-controls="p-goals" aria-selected="false">Goals &amp; phases</button>
   <button class="tab" role="tab" id="tab-scope" aria-controls="p-scope" aria-selected="true">Scope board</button>
   <button class="tab" role="tab" id="tab-matrix" aria-controls="p-matrix" aria-selected="false">Options matrix</button>
   <button class="tab" role="tab" id="tab-open" aria-controls="p-open" aria-selected="false">Still unanswered</button>
 </nav>
+
+<!-- ================= GOALS ================= -->
+<section class="panel" id="p-goals" role="tabpanel" aria-labelledby="tab-goals" hidden>
+  <h2>Goal and success for MVP</h2>
+  <p class="h2note">What the app is for. Everything on the scope board should trace back to one of these three.</p>
+  <div class="goals">
+    <div class="goal">
+      <span class="num">Goal 01</span>
+      <h3>New acquisition</h3>
+    </div>
+    <div class="goal">
+      <span class="num">Goal 02</span>
+      <h3>Lead capture</h3>
+    </div>
+    <div class="goal">
+      <span class="num">Goal 03</span>
+      <h3>Retention tool</h3>
+    </div>
+  </div>
+
+  <h2 style="margin-top:30px">Phases</h2>
+  <p class="h2note">What lands when. The scope board is the working version of the MVP column &mdash; this is where the shape of each release gets written down.</p>
+  <div class="phases">
+    <div class="phase">
+      <div class="phead"><h3>MVP</h3></div>
+      <span class="kpi"><span class="klab">Hero KPI</span><span class="kval">Retention</span></span>
+    </div>
+    <div class="phase later">
+      <div class="phead"><h3>V2</h3></div>
+      <span class="tbd">tbd</span>
+    </div>
+    <div class="phase later">
+      <div class="phead"><h3>V3</h3></div>
+      <span class="tbd">tbd</span>
+    </div>
+  </div>
+</section>
 
 <!-- ================= SCOPE BOARD ================= -->
 <section class="panel" id="p-scope" role="tabpanel" aria-labelledby="tab-scope">
@@ -296,7 +359,7 @@
 
 <!-- ================= MATRIX ================= -->
 <section class="panel" id="p-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
-  <p class="h2note" style="margin:0 0 18px;max-width:76ch">Three platform requirements sit at the top of the matrix, above the scored criteria. Each could rule an option out before scoring begins, so they are not scored &mdash; they qualify. A platform that fails the first two is not a cheaper version of bespoke, it's a different product.</p>
+  <p class="h2note" style="margin:0 0 18px;max-width:76ch">One platform requirement sits at the top of the matrix, above the scored criteria. It could rule an option out before scoring begins, so it is not scored &mdash; it qualifies. A platform that fails it is not a cheaper version of bespoke, it's a different product.</p>
 
   <div class="control" style="margin-top:16px">
     <label class="switch">
@@ -354,8 +417,8 @@
   </div>
 
   <div class="note amberish">
-    <h3>The pattern under all three requirements</h3>
-    <p>Read together rather than row by row, the three verdicts say the same thing. Tapcart's capability is real and it is <em>Tapcart's</em>. Flows run through Klaviyo and Attentive, but composition &mdash; campaigns, segments, in&#8209;app messages, A/B tests &mdash; happens in Tapcart's own dashboard, against its own Segment Builder.</p>
+    <h3>The pattern under the requirement</h3>
+    <p>Read across the columns rather than down them, and the verdicts say one thing. Tapcart's capability is real and it is <em>Tapcart's</em>. Flows run through Klaviyo and Attentive, but composition &mdash; campaigns and segments &mdash; happens in Tapcart's own dashboard, against its own Segment Builder.</p>
     <p>That is not a failure, it's a different operating model: Klaviyo becomes the data layer and Tapcart becomes the messaging surface, instead of Klaviyo owning both. It is worth deciding whether that is acceptable <b>before</b> negotiating price, because no amount of custom&#8209;block spend changes it. Custom blocks alter what a screen renders, not who owns the send.</p>
     <p>Appbrew still carries two blanks for the opposite reason to before: its pricing is now public, but nothing published shows Stay&nbsp;Ai support at all. Its total is scored out of five rows, not seven, and isn't directly comparable until that lands.</p>
   </div>
@@ -755,7 +818,7 @@ const CRITERIA = [
   { name:"Managing a subscription", scores:[5,4,4,U], weighted:true  },
   { name:"Selling a subscription",  scores:[5,5,5,4], weighted:true  },
   { name:"Klaviyo, Attentive and Rivo", scores:[4,5,5,4], weighted:false,
-    note:"Scores cover Klaviyo and Attentive only — push targeted on Klaviyo profiles and segments, fired by Klaviyo flows and trigger-events, plus Klaviyo reviews and star ratings on product pages. Rivo joined the MVP set after these were set and is unassessed for every column, so this row currently flatters all four. Whether Klaviyo does the sending is the gate above, not this score." },
+    note:"Scores cover Klaviyo and Attentive only — push targeted on Klaviyo profiles and segments, fired by Klaviyo flows and trigger-events, plus Klaviyo reviews and star ratings on product pages. Rivo joined the MVP set after these were set and is unassessed for every column, so this row currently flatters all four. Where a push gets composed is the gate above, not this score." },
   { name:"Time to launch",          scores:[1,5,3,4], weighted:false },
   { name:"Ongoing dev burden",      scores:[1,5,3,4], weighted:false }
 ];
@@ -777,30 +840,9 @@ const REQUIREMENTS = [
     src: "Tapcart Klaviyo page; flows confirmed directly",
     v: [
       ["met",  "By construction", "Klaviyo's SDK is the sender, so flows and campaigns both originate there."],
-      ["part", "Flows yes, authoring no", "Flows confirmed through Klaviyo and Attentive. But Tapcart ships its own Segment Builder and campaign composer, and neither Tapcart's nor Klaviyo's published material states that Klaviyo does the sending. Campaign authoring reads as Tapcart's surface."],
+      ["part", "Flows yes, authoring no", "Flows confirmed through Klaviyo and Attentive, so the sending half is settled. Authoring is not: Tapcart ships its own Segment Builder and campaign composer, and nothing in Tapcart's or Klaviyo's published material says a campaign can be written in Klaviyo and pushed to the app. Campaign composition reads as Tapcart's surface."],
       ["part", "Same as standard", "Custom blocks change what a screen can render, not where a push gets composed."],
-      ["unk",  "Klaviyo listed, depth untested", "Klaviyo appears under Works with on their Shopify listing. Nothing published on whether Klaviyo sends."]
-    ]
-  },
-  {
-    name: "Named behavioural events into Klaviyo",
-    note: "Screen viewed, product viewed, educational content actually watched &mdash; usable for segmentation, triggering and personalisation, in real time.",
-    v: [
-      ["met", "By construction", "We define the schema."],
-      ["unk", "No published list", "Nothing public names the events, or confirms they arrive as Klaviyo metrics rather than generic app activity. Ask for the schema, not the logo."],
-      ["unk", "Same as standard", "Custom blocks can emit events, but that is scope you own, not a capability they ship."],
-      ["unk", "Not yet asked", ""]
-    ]
-  },
-  {
-    name: "In-app messaging deployable without an app release",
-    note: "Lifecycle owns modals, banners, embedded cards and interstitials, targeted on subscription status and behaviour.",
-    src: "Tapcart features page",
-    v: [
-      ["cond", "Only if built", "Needs its own CMS and targeting layer &mdash; real scope."],
-      ["part", "Deployable, but Tapcart owns it", "An Inbox message centre, a Segment Builder over purchase history, browsing behaviour and account attributes, and App Studio publishing with no app store release. A/B testing is Enterprise&#8209;only. All of it authored in Tapcart's dashboard rather than Klaviyo &mdash; so the without&#8209;a&#8209;release half passes and the lifecycle&#8209;owns&#8209;it half does not."],
-      ["part", "Same, plus custom blocks", "Custom blocks widen what a message can contain. They do not move authoring into Klaviyo."],
-      ["unk",  "Not yet asked", "Their Pro tier lists A/B testing and AI-assisted blocks. Nothing published on lifecycle-driven in-app messaging."]
+      ["unk",  "Klaviyo listed, depth untested", "Klaviyo appears under Works with on their Shopify listing. Nothing published on either half &mdash; whether flows send into the app, or where campaigns get composed."]
     ]
   }
 ];
@@ -816,7 +858,7 @@ function sectionRow(text){
 }
 
 const rbody = document.getElementById("reqbody");
-rbody.appendChild(sectionRow("Requirements — these qualify an option, they are not scored"));
+rbody.appendChild(sectionRow("Requirement — this qualifies an option, it is not scored"));
 REQUIREMENTS.forEach(r => {
   const tr = document.createElement("tr");
   const th = document.createElement("th");
